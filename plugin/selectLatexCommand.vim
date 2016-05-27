@@ -7,32 +7,32 @@ if exists("g:loaded_selectLatexCommand") || &cp || v:version < 700
 endif
 let g:loaded_selectLatexCommand = 1
 
-function! g:GoToEndOfCommandName()
+function! s:GoToEndOfCommandName()
     " We search to the next non-alphabetical character with /\W
     " This doesnt take into account that latex commands can also be single non-alphabetical characters but who cares, honestly.
     execute "normal! /\\W\<CR>h"
 endfunction
 
-function! g:GoToEndOfParameters()
-    if CurrentCharacter() ==# "{"
+function! s:GoToEndOfParameters()
+    if s:CurrentCharacter() ==# "{"
         normal! %
         " We end up at the closing {} bracket. We could still have multiple arguments to our command, therefore move one to the right and run this function again
         normal! l
-        call GoToEndOfParameters()
+        call s:GoToEndOfParameters()
     else
         return 0
     endif
 endfunction
 
-function! g:CursorAtEndOfLine()
+function! s:CursorAtEndOfLine()
     return col(".") == col("$")-1
 endfunction
 
-function! g:CurrentCharacter()
+function! s:CurrentCharacter()
     return matchstr(getline('.'), '\%' . col('.') . 'c.')
 endfunction
 
-function! g:SelectEntireCommand()
+function! SelectEntireCommand()
     " Select the command thats closest to the left of the cursor
     call SelectCommandName()
     " We want to select the backslash too, this jumps to the beginning of the selection, selects the char to the left and jumps back and then moves one char to the right
@@ -40,19 +40,19 @@ function! g:SelectEntireCommand()
     " To check for parameters we will jump one char to the right to make those functions simpler
     normal! l
     " if the command has parameters, we need to select those as well.
-    call GoToEndOfParameters()
+    call s:GoToEndOfParameters()
     " We are now down but end up one character to the right of where we want to end.
     normal! h\<CR>
 endfunction 
 
-function! g:SelectCommandName()
-    if CurrentCharacter() ==# "\\"
+function! SelectCommandName()
+    if s:CurrentCharacter() ==# "\\"
     else
         normal! F\
     endif
     " Begin selection one character to the right
     normal! lv
     " Select the entire name of the command
-    call GoToEndOfCommandName()
+    call s:GoToEndOfCommandName()
 endfunction
 
