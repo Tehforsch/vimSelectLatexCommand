@@ -7,13 +7,13 @@ if exists("g:loaded_selectLatexCommand") || &cp || v:version < 700
 endif
 let g:loaded_selectLatexCommand = 1
 
-function! s:GoToEndOfCommandName()
+function! g:GoToEndOfCommandName()
     " We search to the next non-alphabetical character with /\W
     " This doesnt take into account that latex commands can also be single non-alphabetical characters but who cares, honestly.
     execute "normal! /\\W\<CR>h"
 endfunction
 
-function! s:GoToEndOfParameters()
+function! g:GoToEndOfParameters()
     if CurrentCharacter() ==# "{"
         normal! %
         " We end up at the closing {} bracket. We could still have multiple arguments to our command, therefore move one to the right and run this function again
@@ -24,15 +24,15 @@ function! s:GoToEndOfParameters()
     endif
 endfunction
 
-function! s:CursorAtEndOfLine()
+function! g:CursorAtEndOfLine()
     return col(".") == col("$")-1
 endfunction
 
-function! s:CurrentCharacter()
+function! g:CurrentCharacter()
     return matchstr(getline('.'), '\%' . col('.') . 'c.')
 endfunction
 
-function! s:SelectEntireCommand()
+function! g:SelectEntireCommand()
     " Select the command thats closest to the left of the cursor
     call SelectCommandName()
     " We want to select the backslash too, this jumps to the beginning of the selection, selects the char to the left and jumps back and then moves one char to the right
@@ -45,7 +45,7 @@ function! s:SelectEntireCommand()
     normal! h\<CR>
 endfunction 
 
-function! s:SelectCommandName()
+function! g:SelectCommandName()
     if CurrentCharacter() ==# "\\"
     else
         normal! F\
